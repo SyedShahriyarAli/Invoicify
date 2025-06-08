@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Invoicify</title>
+    <base href="/" />
+    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/app.css" rel="stylesheet" />
+    <link href="Invoicify.APP.styles.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div id="app">
+        <img src="images/Loader.gif" style="margin: auto; left: 0; right: 0; top: 0; bottom: 0; position: fixed;" />
+    </div>
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script src="_content/Radzen.Blazor/Radzen.Blazor.min.js"></script>
+
+    <script>
+        function print(content) {
+            var printWindow = window.open('', '_blank');
+            printWindow.document.write(content);
+            printWindow.document.close();
+
+            setTimeout(function () {
+                printWindow.print();
+            }, 2000);
+        }
+    </script>
+</body>
+
+</html>

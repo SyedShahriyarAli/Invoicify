@@ -1,0 +1,57 @@
+﻿@page "/customers/add"
+
+@inject RestService RestService
+@inject NotificationService Notify
+@inject DialogService DialogService
+
+<RadzenTemplateForm TItem="Customer" Data="customer" Submit="@SubmitForm">
+    <RadzenStack>
+        <RadzenFormField Text="Name *" class="w-100">
+            <ChildContent>
+                <RadzenTextBox @bind-Value="customer.Name" Name="Name" />
+            </ChildContent>
+            <Helper>
+                <RadzenRequiredValidator Component="Name" Text="Name is required." />
+            </Helper>
+        </RadzenFormField>
+
+        <RadzenFormField Text="Email *" class="w-100">
+            <ChildContent>
+                <RadzenTextBox @bind-Value="customer.Email" Name="Email" />
+            </ChildContent>
+            <Helper>
+                <RadzenRequiredValidator Component="Email" Text="Email is required." />
+            </Helper>
+        </RadzenFormField>
+
+        <RadzenFormField Text="Contact" class="w-100">
+            <ChildContent>
+                <RadzenTextBox @bind-Value="customer.Contact" Name="Contact" MaxLength="11" />
+            </ChildContent>
+        </RadzenFormField>
+
+        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End">
+            <RadzenButton Text="Save" ButtonType="ButtonType.Submit" IsBusy="loading" />
+        </RadzenStack>
+    </RadzenStack>
+</RadzenTemplateForm>
+
+@code {
+    Customer customer = new Customer();
+    bool loading;
+
+    private async Task SubmitForm()
+    {
+        loading = true;
+
+        var response = await RestService.PostAsync<Customer>("customers", customer);
+
+        if (response)
+        {
+            Notify.Notify(NotificationSeverity.Success, "Customer added.");
+            DialogService.Close(true);
+        }
+
+        loading = false;
+    }
+}

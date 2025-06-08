@@ -1,0 +1,77 @@
+﻿@page "/products"
+
+@inject RestService RestService
+@inject DialogService DialogService
+
+<RadzenStack>
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center">
+        <RadzenText TextStyle="TextStyle.DisplayH6" class="rz-mb-0">Products</RadzenText>
+        <RadzenButton Text="Add" Icon="add" Click="AddProduct" />
+    </RadzenStack>
+
+    <RadzenDataGrid TItem="Product" Data="products" AllowPaging="true" IsLoading="loading">
+        <Columns>
+            <RadzenDataGridColumn TItem="Product" Width="100px" TextAlign="TextAlign.Center" Filterable="false" Sortable="false">
+                <Template Context="data">
+                    <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Secondary"
+                                  Size="ButtonSize.Small" Variant="Variant.Outlined"
+                                  Shade="Shade.Light" Click="@(_ => EditProduct(data.Id))" />
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="Product" Property="Id" Title="Id" />
+            <RadzenDataGridColumn TItem="Product" Property="Name" Title="Name" />
+            <RadzenDataGridColumn TItem="Product" Property="Price" Title="Price" FormatString="{0:n2}" />
+            <RadzenDataGridColumn TItem="Product" Property="CreatedAt" Title="Created At">
+                <Template Context="data">
+                    @data.CreatedAt.ToString("dd/MM/yyyy hh:mm tt")
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="Product" Property="UpdatedAt" Title="Updated At">
+                <Template Context="data">
+                    @data.UpdatedAt.ToString("dd/MM/yyyy hh:mm tt")
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+
+</RadzenStack>
+
+@code {
+
+    private List<Product>? products = new List<Product>();
+    bool loading;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetProducts();
+    }
+
+    private async Task GetProducts()
+    {
+        loading = true;
+
+        products = await RestService.GetAsync<List<Product>>("products");
+
+        loading = false;
+    }
+
+    private async Task AddProduct()
+    {
+        var result = await DialogService.OpenAsync<AddProduct>("Add Product");
+
+        if (result is true)
+        {
+            await GetProducts();
+        }
+    }
+
+    private async Task EditProduct(int id)
+    {
+        var result = await DialogService.OpenAsync<EditProduct>("Edit Product", new Dictionary<string, object> { { "id", id } });
+
+        if (result is true)
+        {
+            await GetProducts();
+        }
+    }
+}

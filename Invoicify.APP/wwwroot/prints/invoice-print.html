@@ -1,0 +1,226 @@
+﻿﻿
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css"
+          href="/_content/Radzen.Blazor/css/software-base.css">
+    <link href="/css/app.css" rel="stylesheet" />
+    <style>
+        .rz-card h6 {
+            margin: 0;
+        }
+
+        .rz-card p {
+            margin: 0;
+        }
+
+        .rz-text-h6 {
+            font-size: 14px !important;
+        }
+
+        .rz-text-body1 {
+            font-size: 13px !important;
+        }
+
+        .rz-cell-data {
+            font-size: 14px !important;
+            font-family: Source Sans Pro, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
+        }
+
+        .rz-column-title-content {
+            font-size: 12px !important;
+            font-family: Source Sans Pro, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
+        }
+
+        .rz-datatable-data td .rz-cell-data,
+        .rz-grid-table td .rz-cell-data {
+            text-overflow: initial !important;
+            white-space: normal !important;
+            word-wrap: break-word !important;
+        }
+
+        .rz-data-grid {
+            height: auto !important;
+            overflow: visible !important;
+            page-break-after: auto;
+        }
+
+        #details td {
+            padding: 1px;
+        }
+
+        @media print {
+            #non-printable {
+                background-color: transparent;
+                margin: 0;
+            }
+
+            #printable {
+                display: block !important;
+            }
+
+            .rz-column-title-content {
+                white-space: break-spaces !important;
+            }
+        }
+
+        .rz-column-title-content {
+            white-space: break-spaces !important;
+        }
+    </style>
+</head>
+
+<body id="non-printable">
+    <div class="rz-card rz-shadow-0" id="printable">
+        <div class="rz-stack rz-display-flex rz-flex-column rz-align-items-normal rz-justify-content-normal"
+             style="flex-wrap:nowrap;">
+
+            <div class="rz-display-flex rz-row rz-align-items-normal rz-justify-content-normal">
+                <div class="rz-col-12 rz-col-md-12 rz-col-lg-12">
+                    <div class="rz-stack rz-display-flex rz-flex-row rz-align-items-center rz-justify-content-center"
+                         style="flex-wrap:nowrap;">
+                        <p class="rz-text-h5 rz-text-align-center">INVOICE</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="rz-row rz-display-flex rz-align-items-normal">
+                <div class="rz-col rz-col-12">
+                    <table width="100%" id="details">
+                        <colgroup>
+                            <col span="1" style="width: 100px;">
+                            <col span="1">
+                            <col span="1" style="width: 100px;">
+                            <col span="1">
+                        </colgroup>
+                        <tr>
+                            <td colspan="1">
+                                <p class="rz-text-body1">Invoice #</p>
+                            </td>
+                            <td colspan="1">
+                                <p class="rz-text-h6">{{InvoiceNo}}</p>
+                            </td>
+                            <td colspan="1">
+                                <p class="rz-text-body1">Customer</p>
+                            </td>
+                            <td colspan="1">
+                                <p class="rz-text-h6">{{Customer}}</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="1">
+                                <p class="rz-text-body1 ">Invoice Date</p>
+                            </td>
+                            <td colspan="1">
+                                <p class="rz-text-h6">{{InvoiceDate}}</p>
+                            </td>
+                            <td colspan="1">
+                                <p class="rz-text-body1">Status</p>
+                            </td>
+                            <td colspan="1">
+                                <p class="rz-text-h6">{{Status}}</p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="rz-display-flex rz-row rz-align-items-normal rz-justify-content-normal">
+                <div class="rz-col-12">
+                    <div class="rz-stack rz-display-flex rz-flex-column rz-align-items-normal rz-justify-content-normal"
+                         style="flex-wrap:nowrap;">
+                        <div class="rz-stack rz-display-flex rz-flex-column rz-align-items-normal rz-justify-content-normal"
+                             style="--rz-gap:0px;flex-wrap:nowrap;">
+                            <div class="rz-data-grid rz-datatable rz-datatable-scrollable">
+                                <div class="rz-data-grid-data">
+                                    <table class="rz-grid-table rz-grid-table-fixed rz-grid-table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th rowspan="1" colspan="1"
+                                                    class="rz-unselectable-text rz-text-align-center" scope="col">
+                                                    <div tabindex="-1">
+                                                        <span class="rz-column-title" title="Product">
+                                                            <span class="rz-column-title-content">Product</span>
+                                                        </span>
+                                                    </div>
+                                                </th>
+                                                <th rowspan="1" colspan="1"
+                                                    class="rz-unselectable-text rz-text-align-center" scope="col">
+                                                    <div tabindex="-1">
+                                                        <span class="rz-column-title" title="Quantity">
+                                                            <span class="rz-column-title-content">Quantity</span>
+                                                        </span>
+                                                    </div>
+                                                </th>
+                                                <th rowspan="1" colspan="1" width="30%"
+                                                    class="rz-unselectable-text rz-text-align-center" scope="col">
+                                                    <div tabindex="-1">
+                                                        <span class="rz-column-title" title="Price">
+                                                            <span class="rz-column-title-content">Unit Price</span>
+                                                        </span>
+                                                    </div>
+                                                </th>
+                                                <th rowspan="1" colspan="1"
+                                                    class="rz-unselectable-text rz-text-align-center" scope="col">
+                                                    <div tabindex="-1">
+                                                        <span class="rz-column-title" title="Total">
+                                                            <span class="rz-column-title-content">Total</span>
+                                                        </span>
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {{Details}}
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th rowspan="1" colspan="1"
+                                                    class="rz-unselectable-text rz-text-align-left" scope="col">
+                                                    <div tabindex="-1">
+                                                        <span class="rz-column-title" title="Grand Total">
+                                                            <span class="rz-column-title-content">Grand Total</span>
+                                                        </span>
+                                                    </div>
+                                                </th>
+
+                                                <th rowspan="1" colspan="1"
+                                                    class="rz-unselectable-text rz-text-align-left" scope="col">
+
+                                                </th>
+                                                <th rowspan="1" colspan="1"
+                                                    class="rz-unselectable-text rz-text-align-left" scope="col">
+
+                                                </th>
+
+                                                <th rowspan="1" colspan="1"
+                                                    class="rz-unselectable-text rz-text-align-center" scope="col">
+                                                    <div tabindex="-1">
+                                                        <span class="rz-column-title" title="UnitPrice">
+                                                            <span class="rz-column-title-content">{{TotalAmount}}</span>
+                                                        </span>
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="rz-display-flex rz-row rz-align-items-normal rz-justify-content-normal divFooter rz-text-align-center">
+                <div class="rz-col-12 rz-col-md-12 rz-col-lg-12 rz-text-align-center">
+                    <p class="rz-text-caption rz-text-align-center">This is a computer generated document and doesn't need any signature</p>
+                    <p class="rz-text-caption rz-text-align-center">Printed On: {{CurrentDate}}</p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35728.132 d17.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Invoicify.API", "Invoicify.API\Invoicify.API.csproj", "{86781701-91C4-41D9-9064-6C4C51D3AC7C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Invoicify.Shared", "Invoicify.Shared\Invoicify.Shared.csproj", "{29A91928-DCC5-42D0-8353-C1D53D6E8B5E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Invoicify.APP", "Invoicify.APP\Invoicify.APP.csproj", "{7639DE25-A726-4165-9BFC-B33456917EF8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{86781701-91C4-41D9-9064-6C4C51D3AC7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86781701-91C4-41D9-9064-6C4C51D3AC7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86781701-91C4-41D9-9064-6C4C51D3AC7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86781701-91C4-41D9-9064-6C4C51D3AC7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29A91928-DCC5-42D0-8353-C1D53D6E8B5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29A91928-DCC5-42D0-8353-C1D53D6E8B5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29A91928-DCC5-42D0-8353-C1D53D6E8B5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29A91928-DCC5-42D0-8353-C1D53D6E8B5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7639DE25-A726-4165-9BFC-B33456917EF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7639DE25-A726-4165-9BFC-B33456917EF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7639DE25-A726-4165-9BFC-B33456917EF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7639DE25-A726-4165-9BFC-B33456917EF8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

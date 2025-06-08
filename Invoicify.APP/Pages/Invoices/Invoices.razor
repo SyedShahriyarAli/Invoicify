@@ -1,0 +1,170 @@
+﻿@page "/invoices"
+
+@inject RestService RestService
+@inject DialogService DialogService
+@inject NotificationService Notify
+@inject HttpClient HttpClient
+@inject IJSRuntime JSRuntime
+
+@using Invoicify.Shared.Enums
+
+<RadzenStack>
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center">
+        <RadzenText TextStyle="TextStyle.DisplayH6" class="rz-mb-0">Invoices</RadzenText>
+
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.End">
+            <RadzenDatePicker @bind-Value="fromDate" Style="width: 200px;" DateFormat="dd/MM/yyyy" />
+
+            <RadzenDatePicker @bind-Value="toDate" Style="width: 200px;" DateFormat="dd/MM/yyyy" />
+
+            <RadzenButton Text="search" Icon="Search" ButtonStyle="ButtonStyle.Success" Click="GetInvoices" IsBusy="loading" />
+            <RadzenButton Text="Add" Icon="add" Click="AddInvoice" />
+        </RadzenStack>
+    </RadzenStack>
+
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Left" AlignItems="AlignItems.End">
+
+    </RadzenStack>
+
+    <RadzenDataGrid TItem="Invoice" Data="invoices" AllowPaging="true" IsLoading="loading" AllowSorting="true" AllowFiltering="true">
+        <Columns>
+            <RadzenDataGridColumn TItem="Invoice" Width="120px" TextAlign="TextAlign.Center" Filterable="false" Sortable="false">
+                <Template Context="data">
+                    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="1">
+                        @if (data.Status == InvoiceStatus.Pending)
+                        {
+                            <RadzenButton Icon="done" ButtonStyle="ButtonStyle.Success"
+                            Size="ButtonSize.Small" Variant="Variant.Outlined"
+                            Shade="Shade.Light"
+                            Click="@(_ => UpdateStatus(data.Id, InvoiceStatus.Paid))" />
+
+                            <RadzenButton Icon=" cancel" ButtonStyle="ButtonStyle.Danger"
+                            Size="ButtonSize.Small" Variant="Variant.Outlined"
+                            Shade="Shade.Light"
+                            Click="@(_ => UpdateStatus(data.Id, InvoiceStatus.Cancelled))" />
+                        }
+
+                        <RadzenButton Icon="print" ButtonStyle="ButtonStyle.Info"
+                        Size="ButtonSize.Small" Variant="Variant.Outlined"
+                        Shade="Shade.Light" Click="@(_ => PrintInvoice(data.Id))" />
+                    </RadzenStack>
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="Invoice" Property="Id" Title="Id" />
+            <RadzenDataGridColumn TItem="Invoice" Property="CustomerName" Title="Customer" />
+            <RadzenDataGridColumn TItem="Invoice" Property="InvoiceDate" Title="Invoice Date">
+                <Template Context="data">
+                    @data.InvoiceDate.ToString("dd/MM/yyyy")
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="Invoice" Property="TotalAmount" Title="Total Amount" FormatString="{0:n2}" />
+            <RadzenDataGridColumn TItem="Invoice" Property="Status" Title="Status" />
+            <RadzenDataGridColumn TItem="Invoice" Property="CreatedAt" Title="Created At">
+                <Template Context="data">
+                    @data.CreatedAt.ToString("dd/MM/yyyy hh:mm tt")
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="Invoice" Property="UpdatedAt" Title="Updated At">
+                <Template Context="data">
+                    @data.UpdatedAt.ToString("dd/MM/yyyy hh:mm tt")
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+
+</RadzenStack>
+
+@code {
+
+    private List<Invoice>? invoices = new List<Invoice>();
+    bool loading;
+
+    DateTime? fromDate = DateTime.Today;
+    DateTime? toDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 23, 59, 59);
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetInvoices();
+    }
+
+    private async Task GetInvoices()
+    {
+        loading = true;
+
+        invoices = await RestService.GetAsync<List<Invoice>>($"invoices?FromDate={fromDate}&ToDate={toDate}");
+
+        loading = false;
+    }
+
+    private async Task AddInvoice()
+    {
+        var result = await DialogService.OpenAsync<AddInvoice>("Add Invoice", null, new() { Width = "80%", Height = "80%" });
+
+        if (result is true)
+        {
+            await GetInvoices();
+        }
+    }
+
+    private async Task UpdateStatus(int id, InvoiceStatus status)
+    {
+        var response = await RestService.GetAsync($"invoices/{id}/UpdateStatus?Status={status}");
+
+        if (response)
+        {
+            Notify.Notify(NotificationSeverity.Success, "Invoice status updated.");
+            await GetInvoices();
+        }
+        else
+        {
+            Notify.Notify(NotificationSeverity.Error, "Failed to update invoice status.");
+        }
+    }
+
+    public async Task PrintInvoice(int id)
+    {
+        var invoice = await RestService.GetAsync<Invoice>($"invoices/{id}");
+
+        string? content = await HttpClient.GetStringAsync($"prints/invoice-print.html");
+
+        content = content.Replace("{{InvoiceNo}}", invoice?.Id.ToString().PadLeft(4, '0'));
+        content = content.Replace("{{Customer}}", invoice?.Customer.Name);
+        content = content.Replace("{{InvoiceDate}}", invoice?.InvoiceDate.ToString("dd/MM/yyyy"));
+        content = content.Replace("{{Status}}", invoice!.Status.ToString());
+        content = content.Replace("{{CurrentDate}}", DateTime.Now.ToString("dd/MM/yyyy"));
+
+        string details = "";
+
+        foreach (var item in invoice.LineItems)
+        {
+
+            var unitPrice = item.UnitPrice.ToString("N2");
+            var total = item.Total.ToString("N2");
+
+            details +=
+                        $@"<tr class='rz-data-row'>
+                            <td rowspan='1' colspan='1'>
+                                <span class='rz-cell-data'>{item.Product.Name}</span>
+                            </td>
+
+                            <td rowspan='1' colspan='1'>
+                                <span class='rz-cell-data rz-text-align-center'>{item.Quantity}</span>
+                            </td>
+
+                            <td rowspan='1' colspan='1'>
+                                <span class='rz-cell-data rz-text-align-center'>{unitPrice}</span>
+                            </td>
+
+                            <td rowspan='1' colspan='1'>
+                                <span class='rz-cell-data rz-text-align-center'>{total}</span>
+                            </td>
+                        </tr>";
+        }
+
+        content = content.Replace("{{TotalAmount}}", invoice.TotalAmount.ToString("N2"));
+
+        content = content.Replace("{{Details}}", details);
+
+        await JSRuntime.InvokeVoidAsync("print", content);
+    }
+}

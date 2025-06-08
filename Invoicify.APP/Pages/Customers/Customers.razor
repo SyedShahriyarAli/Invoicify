@@ -1,0 +1,78 @@
+﻿@page "/customers"
+
+@inject RestService RestService
+@inject DialogService DialogService
+
+<RadzenStack>
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center">
+        <RadzenText TextStyle="TextStyle.DisplayH6" class="rz-mb-0">Customers</RadzenText>
+        <RadzenButton Text="Add" Icon="add" Click="AddCustomer" />
+    </RadzenStack>
+
+    <RadzenDataGrid TItem="Customer" Data="customers" AllowPaging="true" IsLoading="loading" AllowSorting="true" AllowFiltering="true">
+        <Columns>
+            <RadzenDataGridColumn TItem="Customer" Width="100px" TextAlign="TextAlign.Center" Filterable="false" Sortable="false">
+                <Template Context="data">
+                    <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Secondary"
+                                  Size="ButtonSize.Small" Variant="Variant.Outlined"
+                                  Shade="Shade.Light" Click="@(_ => EditCustomer(data.Id))" />
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="Customer" Property="Id" Title="Id" />
+            <RadzenDataGridColumn TItem="Customer" Property="Name" Title="Name" />
+            <RadzenDataGridColumn TItem="Customer" Property="Email" Title="Email" />
+            <RadzenDataGridColumn TItem="Customer" Property="Contact" Title="Contact" />
+            <RadzenDataGridColumn TItem="Customer" Property="CreatedAt" Title="Created At">
+                <Template Context="data">
+                    @data.CreatedAt.ToString("dd/MM/yyyy hh:mm tt")
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="Customer" Property="UpdatedAt" Title="Updated At">
+                <Template Context="data">
+                    @data.UpdatedAt.ToString("dd/MM/yyyy hh:mm tt")
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+
+</RadzenStack>
+
+@code {
+
+    private List<Customer>? customers = new List<Customer>();
+    bool loading;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetCustomers();
+    }
+
+    private async Task GetCustomers()
+    {
+        loading = true;
+
+        customers = await RestService.GetAsync<List<Customer>>("customers");
+
+        loading = false;
+    }
+
+    private async Task AddCustomer()
+    {
+        var result = await DialogService.OpenAsync<AddCustomer>("Add Customer");
+
+        if (result is true)
+        {
+            await GetCustomers();
+        }
+    }
+
+    private async Task EditCustomer(int id)
+    {
+        var result = await DialogService.OpenAsync<EditCustomer>("Edit Customer", new Dictionary<string, object> { { "id", id } });
+
+        if (result is true)
+        {
+            await GetCustomers();
+        }
+    }
+}

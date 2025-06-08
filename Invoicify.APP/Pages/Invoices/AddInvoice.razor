@@ -1,0 +1,199 @@
+﻿@page "/invoices/add"
+
+@inject RestService RestService
+@inject NotificationService Notify
+@inject DialogService DialogService
+
+<RadzenTemplateForm TItem="Invoice" Data="invoice" Submit="@SubmitForm">
+    <RadzenStack>
+        <RadzenFormField Text="Customer *" class="w-100">
+            <ChildContent>
+                <RadzenDropDown @bind-Value="@invoice.CustomerId" AllowFiltering="true"
+                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                Data="customers" TextProperty="Name" ValueProperty="Id" Name="Customer" />
+            </ChildContent>
+            <Helper>
+                <RadzenRequiredValidator Component="Customer" Text="Customer is required." />
+            </Helper>
+        </RadzenFormField>
+
+        <RadzenFormField Text="Invoice Date *" class="w-100">
+            <ChildContent>
+                <RadzenDatePicker @bind-Value="@invoice.InvoiceDate" Name="InvoiceDate" DateFormat="dd/MM/yyyy" />
+            </ChildContent>
+            <Helper>
+                <RadzenRequiredValidator Component="InvoiceDate" Text="Invoice Date is required." />
+            </Helper>
+        </RadzenFormField>
+
+        <RadzenCard Variant="Variant.Outlined">
+            <RadzenStack>
+                <RadzenText Text="Add Products" TextStyle="TextStyle.H6" />
+
+                <RadzenTemplateForm TItem="InvoiceLineItem" Data="lineItem" Submit="@AddProduct" Context="invoiceLineItem">
+                    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceEvenly" AlignItems="AlignItems.Center">
+                        <RadzenFormField Text="Product *" class="w-100">
+                            <ChildContent>
+                                <RadzenDropDown @bind-Value="@lineItem.ProductId" AllowFiltering="true"
+                                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                                Data="products" TextProperty="Name" ValueProperty="Id" Name="Product"
+                                                Change="ProductChanged" />
+                            </ChildContent>
+                            <Helper>
+                                <RadzenRequiredValidator Component="Product" Text="Product is required." Popup="true" />
+                            </Helper>
+                        </RadzenFormField>
+
+                        <RadzenFormField Text="Quantity *" class="w-100">
+                            <ChildContent>
+                                <RadzenNumeric @bind-Value="lineItem.Quantity" Name="Quantity" />
+                            </ChildContent>
+                            <Helper>
+                                <RadzenRequiredValidator Component="Quantity" Text="Quantity is required." Popup="true" />
+                            </Helper>
+                        </RadzenFormField>
+
+                        <RadzenFormField Text="Price *" class="w-100">
+                            <ChildContent>
+                                <RadzenNumeric @bind-Value="lineItem.UnitPrice" Name="Price" />
+                            </ChildContent>
+                            <Helper>
+                                <RadzenRequiredValidator Component="Price" Text="Price is required." Popup="true" />
+                            </Helper>
+                        </RadzenFormField>
+
+                        <RadzenButton Text="Add" Icon="add" ButtonType="ButtonType.Submit" IsBusy="loading" class="w-25" />
+                    </RadzenStack>
+                </RadzenTemplateForm>
+            </RadzenStack>
+        </RadzenCard>
+
+        @if (invoice.LineItems.Count > 0)
+        {
+            <RadzenDataGrid @ref="@dataGrid" Data="@invoice.LineItems" TItem="InvoiceLineItem" ShowPagingSummary="true">
+                <Columns>
+                    <RadzenDataGridColumn TItem="InvoiceLineItem" Width="100px" TextAlign="TextAlign.Center">
+                        <Template Context="data">
+                            <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger"
+                                          Size="ButtonSize.Small" Variant="Variant.Outlined"
+                                          Shade="Shade.Light" Click="@(_ => RemoveLineItem(data))" />
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="InvoiceLineItem" Property="ProductName" Title="Product" />
+                    <RadzenDataGridColumn TItem="InvoiceLineItem" Property="Quantity" Title="Quantity" />
+                    <RadzenDataGridColumn TItem="InvoiceLineItem" Property="UnitPrice" Title="Price" FormatString="{0:n2}" />
+                    <RadzenDataGridColumn TItem="InvoiceLineItem" Property="Total" Title="Total Price" FormatString="{0:n2}" />
+                </Columns>
+            </RadzenDataGrid>
+        }
+        else
+        {
+            <RadzenText TextAlign="TextAlign.Center" class="rz-pt-4">No products added yet.</RadzenText>
+        }
+
+        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center">
+            <RadzenText TextStyle="TextStyle.DisplayH6" class="mb-0">Total Amount: @invoice.TotalAmount.ToString("#,##0.#0") </RadzenText>
+
+            <RadzenButton Text="Save" ButtonType="ButtonType.Submit" IsBusy="loading" />
+        </RadzenStack>
+    </RadzenStack>
+</RadzenTemplateForm>
+
+@code {
+    Invoice invoice = new Invoice();
+    InvoiceLineItem lineItem = new InvoiceLineItem();
+
+    RadzenDataGrid<InvoiceLineItem>? dataGrid;
+
+    bool loading;
+
+    List<Customer>? customers = new List<Customer>();
+    List<Product>? products = new List<Product>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        loading = true;
+
+        await GetCustomers();
+        await GetProducts();
+
+        loading = false;
+    }
+
+    private async Task GetCustomers()
+    {
+        customers = await RestService.GetAsync<List<Customer>>("customers");
+    }
+
+    private async Task GetProducts()
+    {
+        products = await RestService.GetAsync<List<Product>>("products");
+    }
+
+    private async Task SubmitForm()
+    {
+        loading = true;
+
+        if (invoice.LineItems.Count == 0)
+        {
+            Notify.Notify(NotificationSeverity.Error, "Please add at least one product to the invoice.");
+            loading = false;
+            return;
+        }
+
+        var response = await RestService.PostAsync<Invoice>("invoices", invoice);
+
+        if (response)
+        {
+            Notify.Notify(NotificationSeverity.Success, "Invoice added.");
+            DialogService.Close(true);
+        }
+
+        loading = false;
+    }
+
+    private void ProductChanged(object value)
+    {
+        if (value is int productId && productId > 0)
+        {
+            var product = products?.FirstOrDefault(p => p.Id == productId);
+
+            if (product != null)
+            {
+                lineItem.ProductName = product.Name;
+                lineItem.UnitPrice = product.Price;
+            }
+        }
+        else
+        {
+            lineItem.UnitPrice = 0;
+        }
+    }
+
+    private void AddProduct()
+    {
+        loading = true;
+
+        if (lineItem.ProductId > 0 && lineItem.Quantity > 0 && lineItem.UnitPrice > 0)
+        {
+            invoice.LineItems.Add(lineItem);
+            invoice.TotalAmount += lineItem.Total;
+            lineItem = new InvoiceLineItem();
+
+            dataGrid?.Reload();
+        }
+        else
+        {
+            Notify.Notify(NotificationSeverity.Error, "Please fill in all product details.");
+        }
+
+        loading = false;
+    }
+
+    private void RemoveLineItem(InvoiceLineItem item)
+    {
+        invoice.LineItems.Remove(item);
+        invoice.TotalAmount -= item.Total;
+        dataGrid?.Reload();
+    }
+}

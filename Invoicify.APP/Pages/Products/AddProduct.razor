@@ -1,0 +1,51 @@
+﻿@page "/products/add"
+
+@inject RestService RestService
+@inject NotificationService Notify
+@inject DialogService DialogService
+
+<RadzenTemplateForm TItem="Product" Data="product" Submit="@SubmitForm">
+    <RadzenStack>
+        <RadzenFormField Text="Name *" class="w-100">
+            <ChildContent>
+                <RadzenTextBox @bind-Value="product.Name" Name="Name" />
+            </ChildContent>
+            <Helper>
+                <RadzenRequiredValidator Component="Name" Text="Name is required." />
+            </Helper>
+        </RadzenFormField>
+
+        <RadzenFormField Text="Price *" class="w-100">
+            <ChildContent>
+                <RadzenNumeric @bind-Value="product.Price" Name="Price" />
+            </ChildContent>
+            <Helper>
+                <RadzenRequiredValidator Component="Price" Text="Price is required." />
+            </Helper>
+        </RadzenFormField>
+
+        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End">
+            <RadzenButton Text="Save" ButtonType="ButtonType.Submit" IsBusy="loading" />
+        </RadzenStack>
+    </RadzenStack>
+</RadzenTemplateForm>
+
+@code {
+    Product product = new Product();
+    bool loading;
+
+    private async Task SubmitForm()
+    {
+        loading = true;
+
+        var response = await RestService.PostAsync<Product>("products", product);
+
+        if (response)
+        {
+            Notify.Notify(NotificationSeverity.Success, "Product added.");
+            DialogService.Close(true);
+        }
+
+        loading = false;
+    }
+}
