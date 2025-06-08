@@ -1,7 +1,298 @@
 ﻿@page "/"
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Invoicify | Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<RadzenStack Gap="2rem" Class="rz-p-4">
+    <!-- Header Section -->
+    <RadzenCard Class="rz-background-color-primary rz-color-on-primary rz-text-align-center">
+        <RadzenStack Gap="1rem" Orientation="Orientation.Vertical" AlignItems="AlignItems.Center">
+            <RadzenText TextStyle="TextStyle.DisplayH3" Class="rz-color-on-primary">
+                <RadzenIcon Icon="receipt" Style="font-size: 3rem; margin-right: 1rem;" />
+                INVOICIFY
+            </RadzenText>
+            <RadzenText TextStyle="TextStyle.H5" Class="rz-color-on-primary rz-opacity-90">
+                Invoice Management System
+            </RadzenText>
+            <RadzenText TextStyle="TextStyle.Body2" Class="rz-color-on-primary rz-opacity-80">
+                Database Management System Semester Project
+            </RadzenText>
+        </RadzenStack>
+    </RadzenCard>
 
-Welcome to your new app.
+    <!-- Team Members Section -->
+    <RadzenCard>
+        <RadzenText TextStyle="TextStyle.H4" Class="rz-mb-4">
+            <RadzenIcon Icon="group" Class="rz-mr-2" />
+            Team Members
+        </RadzenText>
+        <RadzenStack Orientation="Orientation.Vertical" Gap="0.5rem" Class="rz-ml-4">
+            <RadzenText>• Syed Shahriyar Ali (22F-BSAI-06)</RadzenText>
+            <RadzenText>• Shaheer Jamal (22F-BSAI-14)</RadzenText>
+            <RadzenText>• Mohsin Ali Akhtar (22F-BSAI-35)</RadzenText>
+        </RadzenStack>
+    </RadzenCard>
+
+    <!-- Project Overview -->
+    <RadzenCard>
+        <RadzenText TextStyle="TextStyle.H4" Class="rz-mb-4">
+            <RadzenIcon Icon="info" Class="rz-mr-2" />
+            Project Overview
+        </RadzenText>
+        <RadzenText TextStyle="TextStyle.Body1" Class="rz-mb-3">
+            Invoicify is a minimal invoice management system built using ASP.NET Core Web API and Blazor Server.
+            The application provides complete CRUD operations for managing customers, products, and invoices with a modern,
+            responsive user interface powered by Radzen components.
+        </RadzenText>
+
+        <RadzenText TextStyle="TextStyle.H6" Class="rz-mb-2">Key Features:</RadzenText>
+        <RadzenStack Orientation="Orientation.Vertical" Gap="0.5rem" Class="rz-ml-4">
+            <RadzenText>• Customer Management (Create, Read, Update)</RadzenText>
+            <RadzenText>• Product Management (Create, Read, Update)</RadzenText>
+            <RadzenText>• Invoice Management with Line Items</RadzenText>
+            <RadzenText>• Invoice Status Tracking (Pending, Paid, Cancelled)</RadzenText>
+            <RadzenText>• Date-based Invoice Filtering</RadzenText>
+        </RadzenStack>
+    </RadzenCard>
+
+    <!-- Database Schema Section -->
+    <RadzenCard>
+        <RadzenText TextStyle="TextStyle.H4" Class="rz-mb-4">
+            <RadzenIcon Icon="storage" Class="rz-mr-2" />
+            Database Schema
+        </RadzenText>
+
+        <RadzenTabs>
+            <Tabs>
+                <RadzenTabsItem Text="Tables Overview">
+                    <RadzenDataGrid Data="@tableInfo" TItem="TableInfo" Class="rz-mt-4">
+                        <Columns>
+                            <RadzenDataGridColumn TItem="TableInfo" Property="TableName" Title="Table Name" />
+                            <RadzenDataGridColumn TItem="TableInfo" Property="Purpose" Title="Purpose" />
+                            <RadzenDataGridColumn TItem="TableInfo" Property="KeyFields" Title="Key Fields" />
+                        </Columns>
+                    </RadzenDataGrid>
+                </RadzenTabsItem>
+
+                <RadzenTabsItem Text="Entity Relationships">
+                    <RadzenCard Class="rz-mt-4">
+                        <RadzenText TextStyle="TextStyle.H6" Class="rz-mb-3">Entity Relationship Diagram</RadzenText>
+                        <RadzenText TextStyle="TextStyle.Body2" Class="rz-mb-4">
+                            The database follows a normalized structure with the following relationships:
+                        </RadzenText>
+
+                        <RadzenStack Orientation="Orientation.Vertical" Gap="1rem">
+                            <RadzenAlert AlertStyle="AlertStyle.Info" ShowIcon="true">
+                                <RadzenText><strong>Customer ↔ Invoice:</strong> One-to-Many relationship. Each customer can have multiple invoices.</RadzenText>
+                            </RadzenAlert>
+                            <RadzenAlert AlertStyle="AlertStyle.Success" ShowIcon="true">
+                                <RadzenText><strong>Invoice ↔ InvoiceLineItem:</strong> One-to-Many relationship. Each invoice contains multiple line items.</RadzenText>
+                            </RadzenAlert>
+                            <RadzenAlert AlertStyle="AlertStyle.Warning" ShowIcon="true">
+                                <RadzenText><strong>Product ↔ InvoiceLineItem:</strong> One-to-Many relationship. Each product can appear in multiple line items.</RadzenText>
+                            </RadzenAlert>
+                        </RadzenStack>
+                    </RadzenCard>
+                </RadzenTabsItem>
+
+                <RadzenTabsItem Text="Database Constraints">
+                    <RadzenDataGrid Data="@constraintInfo" TItem="ConstraintInfo" Class="rz-mt-4">
+                        <Columns>
+                            <RadzenDataGridColumn TItem="ConstraintInfo" Property="Table" Title="Table" />
+                            <RadzenDataGridColumn TItem="ConstraintInfo" Property="Field" Title="Field" />
+                            <RadzenDataGridColumn TItem="ConstraintInfo" Property="Constraint" Title="Constraint Type" />
+                            <RadzenDataGridColumn TItem="ConstraintInfo" Property="Description" Title="Description" />
+                        </Columns>
+                    </RadzenDataGrid>
+                </RadzenTabsItem>
+            </Tabs>
+        </RadzenTabs>
+    </RadzenCard>
+
+    <!-- ERD -->
+    <RadzenCard>
+        <RadzenText TextStyle="TextStyle.H4" Class="rz-mb-4">
+            <RadzenIcon Icon="key" Class="rz-mr-2" />
+            Entity Relationship Diagram (ERD)
+        </RadzenText>
+
+        <RadzenRow JustifyContent="JustifyContent.Center">
+            <RadzenImage Path="images/erd.png" />
+        </RadzenRow>
+    </RadzenCard>
+
+    <!-- API Operations Section -->
+    @* <RadzenCard>
+        <RadzenText TextStyle="TextStyle.H4" Class="rz-mb-4">
+            <RadzenIcon Icon="api" Class="rz-mr-2" />
+            API Operations
+        </RadzenText>
+
+        <RadzenTabs>
+            <Tabs>
+                <RadzenTabsItem Text="Customers API">
+                    <RadzenDataGrid Data="@customerOperations" TItem="ApiOperation" Class="rz-mt-4" AllowSorting="true">
+                        <Columns>
+                            <RadzenDataGridColumn TItem="ApiOperation" Property="Method" Title="HTTP Method">
+                                <Template Context="operation">
+                                    <RadzenBadge BadgeStyle="@GetMethodBadgeStyle(operation.Method)" Text="@operation.Method" />
+                                </Template>
+                            </RadzenDataGridColumn>
+                            <RadzenDataGridColumn TItem="ApiOperation" Property="Endpoint" Title="Endpoint" />
+                            <RadzenDataGridColumn TItem="ApiOperation" Property="Description" Title="Description" />
+                        </Columns>
+                    </RadzenDataGrid>
+                </RadzenTabsItem>
+
+                <RadzenTabsItem Text="Products API">
+                    <RadzenDataGrid Data="@productOperations" TItem="ApiOperation" Class="rz-mt-4" AllowSorting="true">
+                        <Columns>
+                            <RadzenDataGridColumn TItem="ApiOperation" Property="Method" Title="HTTP Method">
+                                <Template Context="operation">
+                                    <RadzenBadge BadgeStyle="@GetMethodBadgeStyle(operation.Method)" Text="@operation.Method" />
+                                </Template>
+                            </RadzenDataGridColumn>
+                            <RadzenDataGridColumn TItem="ApiOperation" Property="Endpoint" Title="Endpoint" />
+                            <RadzenDataGridColumn TItem="ApiOperation" Property="Description" Title="Description" />
+                        </Columns>
+                    </RadzenDataGrid>
+                </RadzenTabsItem>
+
+                <RadzenTabsItem Text="Invoices API">
+                    <RadzenDataGrid Data="@invoiceOperations" TItem="ApiOperation" Class="rz-mt-4" AllowSorting="true">
+                        <Columns>
+                            <RadzenDataGridColumn TItem="ApiOperation" Property="Method" Title="HTTP Method">
+                                <Template Context="operation">
+                                    <RadzenBadge BadgeStyle="@GetMethodBadgeStyle(operation.Method)" Text="@operation.Method" />
+                                </Template>
+                            </RadzenDataGridColumn>
+                            <RadzenDataGridColumn TItem="ApiOperation" Property="Endpoint" Title="Endpoint" />
+                            <RadzenDataGridColumn TItem="ApiOperation" Property="Description" Title="Description" />
+                        </Columns>
+                    </RadzenDataGrid>
+                </RadzenTabsItem>
+            </Tabs>
+        </RadzenTabs>
+    </RadzenCard> *@
+
+    <!-- Technology Stack -->
+    <RadzenCard>
+        <RadzenText TextStyle="TextStyle.H4" Class="rz-mb-4">
+            <RadzenIcon Icon="code" Class="rz-mr-2" />
+            Technology Stack
+        </RadzenText>
+
+        <RadzenRow Gap="2rem">
+            <RadzenColumn Size="6">
+                <RadzenCard Variant="Variant.Outlined">
+                    <RadzenText TextStyle="TextStyle.H6" Class="rz-mb-3">Backend Technologies</RadzenText>
+                    <RadzenStack Orientation="Orientation.Vertical" Gap="0.5rem">
+                        <RadzenText>• ASP.NET Core 8.0 Web API</RadzenText>
+                        <RadzenText>• Entity Framework Core</RadzenText>
+                        <RadzenText>• SQL Server Database</RadzenText>
+                        <RadzenText>• RESTful API Design</RadzenText>
+                    </RadzenStack>
+                </RadzenCard>
+            </RadzenColumn>
+            <RadzenColumn Size="6">
+                <RadzenCard Variant="Variant.Outlined">
+                    <RadzenText TextStyle="TextStyle.H6" Class="rz-mb-3">Frontend Technologies</RadzenText>
+                    <RadzenStack Orientation="Orientation.Vertical" Gap="0.5rem">
+                        <RadzenText>• Blazor Server</RadzenText>
+                        <RadzenText>• Radzen Blazor Components</RadzenText>
+                        <RadzenText>• C# Razor Pages</RadzenText>
+                        <RadzenText>• Responsive Design</RadzenText>
+                    </RadzenStack>
+                </RadzenCard>
+            </RadzenColumn>
+        </RadzenRow>
+    </RadzenCard>
+
+    <!-- Footer -->
+    <RadzenCard Class="rz-background-color-base-200 rz-text-align-center">
+        <RadzenText TextStyle="TextStyle.Body2" Class="rz-opacity-75">
+            Database Management System Semeter Project • © 2025 Invoicify Team
+        </RadzenText>
+    </RadzenCard>
+</RadzenStack>
+
+@code {
+    public class TableInfo
+    {
+        public string TableName { get; set; } = "";
+        public string Purpose { get; set; } = "";
+        public string KeyFields { get; set; } = "";
+    }
+
+    public class ConstraintInfo
+    {
+        public string Table { get; set; } = "";
+        public string Field { get; set; } = "";
+        public string Constraint { get; set; } = "";
+        public string Description { get; set; } = "";
+    }
+
+    public class ApiOperation
+    {
+        public string Method { get; set; } = "";
+        public string Endpoint { get; set; } = "";
+        public string Description { get; set; } = "";
+    }
+
+    // Data Sources
+    private List<TableInfo> tableInfo = new()
+    {
+        new() { TableName = "Customers", Purpose = "Store customer information", KeyFields = "Id (PK), Name, Email, Contact" },
+        new() { TableName = "Products", Purpose = "Store product catalog", KeyFields = "Id (PK), Name, Price" },
+        new() { TableName = "Invoices", Purpose = "Store invoice headers", KeyFields = "Id (PK), CustomerId (FK), InvoiceDate, Status" },
+        new() { TableName = "InvoiceLineItems", Purpose = "Store invoice line items", KeyFields = "Id (PK), InvoiceId (FK), ProductId (FK), Quantity" }
+    };
+
+    private List<ConstraintInfo> constraintInfo = new()
+    {
+        new() { Table = "Customers", Field = "Name", Constraint = "NOT NULL", Description = "Customer name is required" },
+        new() { Table = "Customers", Field = "Name", Constraint = "MaxLength(100)", Description = "Name limited to 100 characters" },
+        new() { Table = "Products", Field = "Name", Constraint = "NOT NULL", Description = "Product name is required" },
+        new() { Table = "Products", Field = "Price", Constraint = "decimal(18,2)", Description = "Price with 2 decimal places" },
+        new() { Table = "Invoices", Field = "CustomerId", Constraint = "FOREIGN KEY", Description = "References Customers.Id" },
+        new() { Table = "Invoices", Field = "CustomerId", Constraint = "ON DELETE RESTRICT", Description = "Prevent customer deletion with invoices" },
+        new() { Table = "InvoiceLineItems", Field = "InvoiceId", Constraint = "FOREIGN KEY", Description = "References Invoices.Id" },
+        new() { Table = "InvoiceLineItems", Field = "ProductId", Constraint = "FOREIGN KEY", Description = "References Products.Id" },
+        new() { Table = "InvoiceLineItems", Field = "InvoiceId", Constraint = "ON DELETE CASCADE", Description = "Delete line items when invoice deleted" }
+    };
+
+    private List<ApiOperation> customerOperations = new()
+    {
+        new() { Method = "GET", Endpoint = "api/customers", Description = "Retrieve all customers" },
+        new() { Method = "GET", Endpoint = "api/customers/{id}", Description = "Retrieve specific customer by ID" },
+        new() { Method = "POST", Endpoint = "api/customers", Description = "Create new customer" },
+        new() { Method = "PUT", Endpoint = "api/customers/{id}", Description = "Update existing customer" }
+    };
+
+    private List<ApiOperation> productOperations = new()
+    {
+        new() { Method = "GET", Endpoint = "api/products", Description = "Retrieve all products" },
+        new() { Method = "GET", Endpoint = "api/products/{id}", Description = "Retrieve specific product by ID" },
+        new() { Method = "POST", Endpoint = "api/products", Description = "Create new product" },
+        new() { Method = "PUT", Endpoint = "api/products/{id}", Description = "Update existing product" }
+    };
+
+    private List<ApiOperation> invoiceOperations = new()
+    {
+        new() { Method = "GET", Endpoint = "api/invoices", Description = "Retrieve invoices with date filtering" },
+        new() { Method = "GET", Endpoint = "api/invoices/{id}", Description = "Retrieve invoice with line items" },
+        new() { Method = "POST", Endpoint = "api/invoices", Description = "Create new invoice" },
+        new() { Method = "GET", Endpoint = "api/invoices/{id}/UpdateStatus", Description = "Update invoice status" }
+    };
+
+    private BadgeStyle GetMethodBadgeStyle(string method)
+    {
+        return method switch
+        {
+            "GET" => BadgeStyle.Success,
+            "POST" => BadgeStyle.Primary,
+            "PUT" => BadgeStyle.Warning,
+            "DELETE" => BadgeStyle.Danger,
+            _ => BadgeStyle.Secondary
+        };
+    }
+}
